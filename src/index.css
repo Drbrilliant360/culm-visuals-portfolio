@@ -1,0 +1,81 @@
+@import "tailwindcss";
+@import "@fontsource/instrument-serif/400.css";
+@import "@fontsource/instrument-serif/400-italic.css";
+@import "@fontsource-variable/manrope";
+
+/* ---- Design tokens (Minimal Editorial + Culm purple) ---- */
+@theme {
+  /* Palette — 60 / 30 / 10 balance (Coolors: coolors.co/f6f1e7-1a0b2e-7c3aed-c9b6ff-f2b134)
+     60%  neutrals : paper, paper-2          (backgrounds, breathing room)
+     30%  depth    : ink, ink-2, brand-deep  (text, dark bands, contact)
+     10%  colour   : brand (violet) + accent (amber, the complement) for highlights only */
+  --color-paper: #f6f1e7;
+  --color-paper-2: #ebe3d3;
+  --color-ink: #1a0b2e;
+  --color-ink-2: #33224a;
+  --color-muted: #5f5373;
+  --color-line: #d9cfbd;
+  --color-brand: #7c3aed;
+  --color-brand-deep: #5b21b6;
+  --color-lilac: #cbb8ff;
+  --color-accent: #f2b134; /* never used for text on paper (contrast 1.7) */
+
+  --font-display: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --font-sans: "Manrope Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --animate-blob: blob 18s ease-in-out infinite alternate;
+  @keyframes blob {
+    0%   { transform: translate3d(0, 0, 0) scale(1); }
+    50%  { transform: translate3d(6%, -8%, 0) scale(1.15); }
+    100% { transform: translate3d(-8%, 6%, 0) scale(0.95); }
+  }
+}
+
+@layer base {
+  html { background: var(--color-paper); }
+  body {
+    margin: 0;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection { background: var(--color-brand); color: #fff; }
+  :focus-visible { outline: 3px solid var(--color-brand); outline-offset: 3px; border-radius: 6px; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  img { display: block; max-width: 100%; height: auto; }
+  button { font: inherit; color: inherit; }
+  /* touch: no grey tap flash, no 300ms double-tap-zoom delay */
+  a, button, [role="button"] { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+}
+
+/* Shared vertical rhythm for page sections (tighter than before) */
+@utility section-y { padding-block: clamp(3.25rem, 7vw, 6rem); }
+
+/* Lenis recommended styles */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+@layer components {
+  .eyebrow {
+    @apply flex items-center gap-3 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-brand-deep;
+  }
+  .eyebrow::before { content: ""; @apply h-px w-8 bg-brand; }
+  .display { font-family: var(--font-display); font-weight: 400; letter-spacing: -0.015em; line-height: 1; }
+  /* Instrument Serif ships one weight: never let the browser fake a bold */
+  .display, .font-display { font-synthesis: none; }
+  .display em, h1 em, h2 em { font-style: italic; }
+}
+
+/* Film grain overlay (static, cheap) */
+.grain {
+  position: fixed; inset: 0; z-index: 80; pointer-events: none; opacity: 0.09; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
